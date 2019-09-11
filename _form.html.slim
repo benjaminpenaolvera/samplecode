@@ -1,0 +1,68 @@
+.form-container
+  = simple_form_for [:recepcion, @patient] do |f|
+    .row
+      .col.mt-4
+        fieldset.form-group
+          .row
+            .col
+              - if @patient.nombre.blank?
+                .form-header.float-left
+                  .form-header-label Formulario de inicio
+              - else
+                .form-header.float-left
+                  .form-header-label Paciente: #{@patient.nombre}
+              = f.submit 'Guardar', class: 'btn float-right'
+          .separator
+          .row
+            .col-12
+              = f.input :nombre
+          .row
+            .col-3
+              = f.input :sexo, as: :select, collection: ['masculino', 'femenino']
+            .col-5
+              = f.input :fecha_de_nacimiento, as: :date, html5: true
+            .col-1
+              = f.input :edad
+            .col-3
+              = f.input :tipo_paciente, as: :select, collection: ['pensionado', 'asegurado', 'particular']
+          .row
+            .col-8
+              = f.input :direccion_del_paciente
+            .col-4
+              = f.input :ciudad_del_paciente
+          .separator
+          .row
+            .col-8
+              = f.input :familiar_responsable
+            .col-4
+              = f.input :celular_del_responsable
+          .row
+            .col-8
+              = f.input :direccion_del_responsable
+            .col-4
+              = f.input :ciudad_del_responsable
+          .separator
+          .row
+            .col-8#especialistasContainer
+              template
+                .row.especialista
+                  .col-8
+                    = f.input :especialista_ids, as: :select, collection: especialistas, label_method: :nombre, input_html: { id: 'selectBox', name: 'patient[especialista_ids][]' }
+                  .col-2
+                    .remove-especialista
+                      | +
+              - (f.object.especialista_ids || [nil]).each_with_index do |especialista_id, i|
+                .row.especialista
+                  .col-8
+                    = f.input :especialista_ids, as: :select, collection: especialistas, label_method: :nombre, selected: especialista_id, input_html: { id: 'selectBox', name: "patient[especialista_ids][]" }
+                  .col-2
+                    - if i == 0
+                      .add-especialista
+                        | +
+                    - else
+                      .remove-especialista
+                        | +
+            .col-4
+              = f.input :space_id, as: :select, collection: patient_spaces, label_method: :title, label: 'Habitación'
+              = f.input :estado_del_paciente, as: :select, collection: ['estable', 'delicado']
+              = f.input :visitas, as: :select, collection: ['acepta', 'no permitidas']
